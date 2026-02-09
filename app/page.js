@@ -323,7 +323,7 @@ export default function Home() {
   }
 
   return (
-    <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-2 py-12 md:py-14">
+    <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-2 px-2 py-12 md:py-14">
       <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         {/* <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
@@ -337,7 +337,7 @@ export default function Home() {
           </p>
         </div> */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 px-6 py-4 shadow-md backdrop-blur">
+          <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white/90 px-6 py-4 ">
             <div className="flex items-center gap-4">
               <img
                 src={profile.avatar_url}
