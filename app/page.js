@@ -5,13 +5,118 @@ import { supabase } from "../lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 
 const INPUT_BASE =
-  "w-full rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm shadow-sm outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-200";
+  "w-full rounded-2xl border border-white/40 bg-white/95 px-4 py-3 text-sm text-slate-900 shadow-[0_18px_40px_-26px_rgba(15,23,42,0.7)] outline-none transition placeholder:text-slate-400 focus:border-slate-300 focus:ring-2 focus:ring-slate-200";
+
+const PILL_BASE =
+  "flex items-center gap-2 rounded-full border border-white/30 bg-white/90 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-700 shadow-sm backdrop-blur";
+
+const ICON_BASE = "h-4 w-4";
+
+const IconFilter = ({ className = ICON_BASE }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M4 5h16" />
+    <path d="M7 12h10" />
+    <path d="M10 19h4" />
+  </svg>
+);
+
+const IconLocation = ({ className = ICON_BASE }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z" />
+    <circle cx="12" cy="10" r="2.5" />
+  </svg>
+);
+
+const IconAge = ({ className = ICON_BASE }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 7h18" />
+    <path d="M7 3v4" />
+    <path d="M17 3v4" />
+    <rect x="4" y="7" width="16" height="14" rx="2" />
+    <path d="M8 12h8" />
+    <path d="M8 16h6" />
+  </svg>
+);
+
+const IconRefresh = ({ className = ICON_BASE }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 12a9 9 0 0 1 15.5-6.5" />
+    <path d="M18 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-15.5 6.5" />
+    <path d="M6 21v-5h5" />
+  </svg>
+);
+
+const IconLogout = ({ className = ICON_BASE }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <path d="M16 17l5-5-5-5" />
+    <path d="M21 12H9" />
+  </svg>
+);
+
+const IconWhatsapp = ({ className = "h-4 w-4" }) => (
+  <svg
+    className={className}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+  >
+    <path d="M20.5 3.6A11 11 0 0 0 2.2 17.8L1 23l5.3-1.4A11 11 0 1 0 20.5 3.6Zm-8.4 17.8a9 9 0 0 1-4.6-1.2l-.3-.2-3.1.8.8-3-.2-.3a9 9 0 1 1 7.4 3.9Zm5.3-6.5c-.3-.1-1.7-.8-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.7 0a7.5 7.5 0 0 1-2.2-1.4 8.3 8.3 0 0 1-1.5-1.8c-.2-.3 0-.5.1-.6l.5-.5c.2-.2.2-.3.3-.5a.6.6 0 0 0 0-.5c0-.1-.7-1.7-1-2.3-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.7.3-.2.2-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.4.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.3Z" />
+  </svg>
+);
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [match, setMatch] = useState(null);
   const [filters, setFilters] = useState({ city: "", minAge: 18, maxAge: 40 });
+  const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [authBusy, setAuthBusy] = useState(false);
   const [spinBusy, setSpinBusy] = useState(false);
@@ -131,9 +236,9 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-6 py-16">
-        <div className="rounded-3xl bg-white/80 px-8 py-6 text-center shadow-lg">
-          Loading your spot in the friend wheel...
+      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-16">
+        <div className="rounded-[32px] border border-white/40 bg-white/80 px-8 py-6 text-center text-sm text-slate-700 shadow-xl backdrop-blur">
+          Loading your spot in the friend finder...
         </div>
       </main>
     );
@@ -141,32 +246,62 @@ export default function Home() {
 
   if (!user) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center gap-10 px-6 py-16">
-        <section className="w-full rounded-[32px] border border-white/60 bg-white/70 p-10 shadow-xl backdrop-blur">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-xl space-y-4">
-              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                Random Friend Pro v2
-              </p>
-              <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
-                Spin the wheel. Meet a new friend.
-              </h1>
-              <p className="text-base text-slate-600">
-                Drop in anonymously, set your vibe filters, and we will pull a
-                friendly surprise from the community.
-              </p>
-            </div>
-            <div className="flex w-full flex-col gap-3 md:w-auto">
+      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-10 px-6 py-16">
+        <section className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="space-y-6 rounded-[36px] border border-white/40 bg-white/80 p-10 shadow-2xl backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
+              Random Friend Pro v2
+            </p>
+            <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
+              Friend finder, built like your favorite social app.
+            </h1>
+            <p className="text-base text-slate-600">
+              Drop in anonymously, tune your vibe filters, and spin for a
+              surprise introduction. Clean profiles, instant WhatsApp reach, and
+              no noisy onboarding.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 onClick={signIn}
                 disabled={authBusy}
-                className="rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
+                <IconFilter className="h-4 w-4" />
                 {authBusy ? "Entering..." : "Enter the lounge"}
               </button>
               <p className="text-xs text-slate-500">
-                No email needed. You can stay anonymous.
+                No email needed. Stay anonymous.
               </p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
+              alt="Preview profile"
+              className="h-full min-h-[420px] w-full object-cover opacity-90"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute top-6 left-6 flex flex-wrap gap-2">
+              <span className={PILL_BASE}>
+                <IconFilter />
+                Filter
+              </span>
+              <span className={PILL_BASE}>
+                <IconLocation />
+                Location
+              </span>
+              <span className={PILL_BASE}>
+                <IconAge />
+                18-40
+              </span>
+            </div>
+            <div className="absolute bottom-6 left-6 space-y-2 text-white">
+              <p className="text-2xl font-semibold">Mandy Portman, 26</p>
+              <div className="flex items-center gap-2 text-sm text-white/80">
+                <IconLocation className="h-4 w-4" />
+                Ventura, CA
+              </div>
             </div>
           </div>
         </section>
@@ -181,144 +316,180 @@ export default function Home() {
 
   if (!profile) {
     return (
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-6 py-16">
+      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center px-6 py-16">
         <ProfileSetup user={user} onDone={() => fetchProfile(user.id)} />
       </main>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-6 py-12">
-      <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+    <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-6 py-12 md:py-14">
+      <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
             Random Friend Pro v2
           </p>
-          <h1 className="text-4xl font-semibold text-slate-900">
-            Find a surprise friend
+          <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
+            Friend finder
           </h1>
+          <p className="text-sm text-slate-600">
+            Spin the wheel and meet someone new today.
+          </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="rounded-3xl border border-white/60 bg-white/70 px-5 py-4 text-sm text-slate-600 shadow-sm">
-            You are signed in as{" "}
-            <span className="font-semibold text-slate-900">{profile.name}</span>
-          </div>
-          <button
-            onClick={signOut}
-            disabled={authBusy}
-            className="rounded-2xl border border-slate-200 bg-white/80 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {authBusy ? "Signing out..." : "Logout"}
-          </button>
-        </div>
-      </header>
-
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-[32px] border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur">
-          <h2 className="text-2xl font-semibold text-slate-900">
-            Tune your spin
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Filters help match you with someone close to your vibe.
-          </p>
-
-          <div className="mt-6 grid gap-4">
-            <label className="text-xs uppercase tracking-[0.2em] text-slate-500">
-              City
-            </label>
-            <input
-              placeholder="e.g. Austin"
-              className={INPUT_BASE}
-              value={filters.city}
-              onChange={(event) =>
-                setFilters({ ...filters, city: event.target.value })
-              }
-            />
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                  Minimum age
-                </label>
-                <input
-                  type="number"
-                  min="18"
-                  max="99"
-                  className={INPUT_BASE}
-                  value={filters.minAge}
-                  onChange={(event) =>
-                    setFilters({ ...filters, minAge: event.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs uppercase tracking-[0.2em] text-slate-500">
-                  Maximum age
-                </label>
-                <input
-                  type="number"
-                  min="18"
-                  max="99"
-                  className={INPUT_BASE}
-                  value={filters.maxAge}
-                  onChange={(event) =>
-                    setFilters({ ...filters, maxAge: event.target.value })
-                  }
-                />
+          <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 px-6 py-4 shadow-md backdrop-blur">
+            <div className="flex items-center gap-4">
+              <img
+                src={profile.avatar_url}
+                alt={profile.name}
+                className="h-11 w-11 rounded-full object-cover border border-slate-200 shadow-sm"
+              />
+              <div className="flex flex-col leading-tight">
+                <p className="text-base font-semibold text-slate-900">
+                  {profile.name}
+                </p>
               </div>
             </div>
 
             <button
-              onClick={spin}
-              disabled={spinBusy}
-              className="mt-4 rounded-2xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
+              onClick={signOut}
+              disabled={authBusy}
+              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {spinBusy ? "Spinning the wheel..." : "Surprise me"}
+              <IconLogout className="h-4 w-4" />
+              {authBusy ? "Signing out..." : "Logout"}
             </button>
-            {error ? (
-              <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-                {error}
-              </p>
-            ) : null}
           </div>
         </div>
+      </header>
 
-        <div className="rounded-[32px] border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur">
-          <h2 className="text-2xl font-semibold text-slate-900">
-            Your surprise match
-          </h2>
-          <p className="mt-2 text-sm text-slate-600">
-            Spin to reveal a new face.
-          </p>
-
-          <div className="mt-6">
-            {!match ? (
-              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 px-6 py-10 text-center text-sm text-slate-500">
+      <section className="grid items-start gap-8 lg:grid-cols-1">
+        <div className="space-y-6">
+          <div className="relative overflow-hidden rounded-[44px] bg-slate-950 shadow-2xl ring-1 ring-white/10">
+            {match ? (
+              <img
+                src={match.avatar_url}
+                alt={`${match.name} avatar`}
+                className="h-[520px] w-full object-cover sm:h-[560px]"
+              />
+            ) : (
+              <div className="flex h-[520px] w-full items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-center text-sm text-white/60 sm:h-[560px]">
                 No match yet. Your next friend is waiting.
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-4 rounded-3xl border border-emerald-100 bg-emerald-50 px-6 py-8 text-center shadow-sm">
-                <img
-                  src={match.avatar_url}
-                  alt={`${match.name} avatar`}
-                  className="h-24 w-24 rounded-full border-4 border-white object-cover shadow"
-                />
-                <div>
-                  <p className="text-lg font-semibold text-slate-900">
-                    {match.name}, {match.age}
-                  </p>
-                  <p className="text-sm text-slate-600">{match.city}</p>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            <div className="absolute top-6 left-6 right-6 space-y-3">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowFilters((prev) => !prev)}
+                  aria-expanded={showFilters}
+                  className={`${PILL_BASE} transition hover:-translate-y-0.5 hover:border-white/50 hover:bg-white`}
+                >
+                  <IconFilter />
+                  {showFilters ? "Hide filters" : "Filter"}
+                </button>
+              </div>
+              <div
+                className={`grid gap-3 rounded-3xl border border-white/10 bg-black/35 p-4 shadow-lg backdrop-blur transition ${
+                  showFilters ? "opacity-100" : "pointer-events-none opacity-0"
+                }`}
+              >
+                <div className="relative">
+                  <IconLocation className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    placeholder="e.g. Location"
+                    className={`${INPUT_BASE} pl-11`}
+                    value={filters.city}
+                    onChange={(event) =>
+                      setFilters({ ...filters, city: event.target.value })
+                    }
+                  />
                 </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      Minimum age
+                    </label>
+                    <div className="relative">
+                      <IconAge className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="number"
+                        min="18"
+                        max="99"
+                        className={`${INPUT_BASE} pl-11`}
+                        value={filters.minAge}
+                        onChange={(event) =>
+                          setFilters({ ...filters, minAge: event.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      Maximum age
+                    </label>
+                    <div className="relative">
+                      <IconAge className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="number"
+                        min="18"
+                        max="99"
+                        className={`${INPUT_BASE} pl-11`}
+                        value={filters.maxAge}
+                        onChange={(event) =>
+                          setFilters({ ...filters, maxAge: event.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="absolute bottom-7 left-7 right-7 space-y-4 text-white">
+              <div>
+                <p className="text-3xl font-semibold">
+                  {match ? `${match.name}, ${match.age}` : "Friend finder"}
+                </p>
+                <p className="flex items-center gap-2 text-sm text-white/80">
+                  <IconLocation className="h-4 w-4" />
+                  {match ? match.city : "City will appear here"}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-white/70">
+                <span className="h-2 w-2 rounded-full bg-white/80" />
+                <span className="h-2 w-2 rounded-full bg-white/40" />
+                <span className="h-2 w-2 rounded-full bg-white/40" />
+                <span className="h-2 w-2 rounded-full bg-white/40" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={spin}
+                  disabled={spinBusy}
+                  className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <IconRefresh className="h-4 w-4" />
+                  {spinBusy ? "Spinning..." : "Spin again"}
+                </button>
+
                 <a
-                  href={`https://wa.me/${match.phone}`}
+                  href={match ? `https://wa.me/${match.phone}` : "#"}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-2xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow transition hover:bg-emerald-500"
+                  className={`flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lg transition ${
+                    match
+                      ? "bg-emerald-600 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl"
+                      : "cursor-not-allowed bg-emerald-600/50"
+                  }`}
+                  onClick={(event) => {
+                    if (!match) event.preventDefault();
+                  }}
                 >
-                  Message on WhatsApp
+                  <IconWhatsapp />
+                  WhatsApp
                 </a>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </section>
@@ -333,6 +504,7 @@ function ProfileSetup({ user, onDone }) {
     age: "",
     phone: "",
     file: null,
+    countryCode: "+234",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -370,7 +542,7 @@ function ProfileSetup({ user, onDone }) {
           name: form.name,
           city: form.city,
           age: Number(form.age),
-          phone: form.phone,
+          phone: `${form.countryCode}${form.phone}`,
           avatar_url: avatarUrl,
         },
       ]);
@@ -386,15 +558,22 @@ function ProfileSetup({ user, onDone }) {
   };
 
   return (
-    <section className="w-full max-w-2xl rounded-[32px] border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur">
-      <h2 className="text-2xl font-semibold text-slate-900">
-        Complete your profile
-      </h2>
-      <p className="mt-2 text-sm text-slate-600">
-        Tell the community a bit about you before spinning.
-      </p>
+    <section className="w-full max-w-3xl rounded-[36px] border border-white/50 bg-white/80 p-10 shadow-2xl backdrop-blur">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+            Create your profile
+          </p>
+          <h2 className="text-3xl font-semibold text-slate-900">
+            Let the community meet you
+          </h2>
+          <p className="text-sm text-slate-600">
+            Add a photo and details so we can suggest the best match.
+          </p>
+        </div>
+      </div>
 
-      <div className="mt-6 grid gap-4">
+      <div className="mt-8 grid gap-4">
         <input
           placeholder="Name"
           className={INPUT_BASE}
@@ -416,16 +595,16 @@ function ProfileSetup({ user, onDone }) {
           onChange={(event) => setForm({ ...form, age: event.target.value })}
         />
 
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <select
-            className={`${INPUT_BASE} max-w-[110px]`}
+            className={`${INPUT_BASE} sm:max-w-[140px]`}
             value={form.countryCode}
             onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
           >
-            <option value="+234">🇳🇬 +234</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+91">🇮🇳 +91</option>
+            <option value="+234">NG +234</option>
+            <option value="+1">US +1</option>
+            <option value="+44">UK +44</option>
+            <option value="+91">IN +91</option>
           </select>
 
           <input
@@ -438,7 +617,7 @@ function ProfileSetup({ user, onDone }) {
           />
         </div>
 
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white/60 px-4 py-3 text-sm text-slate-500">
+        <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm text-slate-500">
           <input
             type="file"
             className="w-full text-sm"
@@ -451,7 +630,7 @@ function ProfileSetup({ user, onDone }) {
         <button
           onClick={saveProfile}
           disabled={saving}
-          className="rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {saving ? "Saving profile..." : "Save profile"}
         </button>
