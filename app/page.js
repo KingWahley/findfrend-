@@ -337,7 +337,7 @@ export default function Home() {
           </p>
         </div> */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white/90 px-6 py-4 ">
+          <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white/80 px-6 py-4 ">
             <div className="flex items-center gap-4">
               <img
                 src={profile.avatar_url}
