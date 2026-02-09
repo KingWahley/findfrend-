@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-cream: #fef6e4;
+  --bg-coral: #f3d2c1;
+  --bg-mint: #8bd3dd;
+  --ink: #172c66;
+  --accent: #f582ae;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  background: radial-gradient(circle at 20% 20%, rgba(245, 130, 174, 0.15), transparent 50%),
+    radial-gradient(circle at 80% 0%, rgba(139, 211, 221, 0.2), transparent 45%),
+    linear-gradient(135deg, var(--bg-cream), var(--bg-coral));
+  color: var(--ink);
+}
+
+h1, h2, h3 {
+  font-family: 'Fraunces', serif;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
