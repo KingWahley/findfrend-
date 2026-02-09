@@ -323,9 +323,9 @@ export default function Home() {
   }
 
   return (
-    <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-6 py-12 md:py-14">
+    <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-2 py-12 md:py-14">
       <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
             Random Friend Pro v2
           </p>
@@ -335,7 +335,7 @@ export default function Home() {
           <p className="text-sm text-slate-600">
             Spin the wheel and meet someone new today.
           </p>
-        </div>
+        </div> */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 px-6 py-4 shadow-md backdrop-blur">
             <div className="flex items-center gap-4">
@@ -365,7 +365,7 @@ export default function Home() {
 
       <section className="grid items-start gap-8 lg:grid-cols-1">
         <div className="space-y-6">
-          <div className="relative overflow-hidden rounded-[44px] bg-slate-950 shadow-2xl ring-1 ring-white/10">
+          <div className="relative overflow-hidden rounded-[10px] bg-slate-950 shadow-2xl ring-1 ring-white/10">
             {match ? (
               <img
                 src={match.avatar_url}
@@ -466,7 +466,7 @@ export default function Home() {
                 <button
                   onClick={spin}
                   disabled={spinBusy}
-                  className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-6 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-2 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <IconRefresh className="h-4 w-4" />
                   {spinBusy ? "Spinning..." : "Spin again"}
@@ -476,7 +476,7 @@ export default function Home() {
                   href={match ? `https://wa.me/${match.phone}` : "#"}
                   target="_blank"
                   rel="noreferrer"
-                  className={`flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lg transition ${
+                  className={`flex items-center justify-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-white shadow-lg transition ${
                     match
                       ? "bg-emerald-600 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl"
                       : "cursor-not-allowed bg-emerald-600/50"
