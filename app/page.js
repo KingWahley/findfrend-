@@ -246,7 +246,6 @@ export default function Home() {
   if (loading) {
     return (
       <main className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-16">
-
         <div className="flex flex-col items-center justify-center">
           <div className="loader"></div>
           <p className="p-6 font-bold">Finding you a spot in the lobby</p>
@@ -260,7 +259,6 @@ export default function Home() {
       <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-10 px-6 py-16">
         <section className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6 rounded-[36px] border border-white/40 bg-white/80 p-10 shadow-2xl backdrop-blur">
-            
             <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
               Friend finder, built like your favorite social app.
             </h1>
@@ -284,7 +282,7 @@ export default function Home() {
             </div>
           </div>
 
-<div className="relative hidden overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl md:block">
+          <div className="relative hidden overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl md:block">
             <img
               src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
               alt="Preview profile"
@@ -372,6 +370,7 @@ export default function Home() {
       <section className="grid items-start gap-8 lg:grid-cols-1">
         <div className="space-y-6">
           <div className="relative overflow-hidden rounded-[10px] bg-slate-950 shadow-2xl ring-1 ring-white/10">
+            {/* IMAGE OR EMPTY STATE */}
             {match ? (
               <img
                 src={match.avatar_url}
@@ -379,38 +378,38 @@ export default function Home() {
                 className="h-[520px] w-full object-cover sm:h-[560px]"
               />
             ) : (
-              <div className="flex h-[520px] w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-slate-900 via-slate-950 to-black text-center text-sm text-white/60 sm:h-[560px]">
-                {!hasSpun ? (
+              <div className="relative z-30 flex h-[520px] w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-slate-900 via-slate-950 to-black text-center text-sm text-white/60 sm:h-[560px]">
+                {!hasSpun && (
                   <button
                     onClick={spin}
                     disabled={spinBusy}
-                    className="flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-900 shadow-[0_10px_26px_-14px_rgba(15,23,42,0.8)] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_36px_-18px_rgba(15,23,42,0.9)] disabled:cursor-not-allowed disabled:opacity-60"
-                    aria-label={spinBusy ? "Spinning" : "Spin"}
-                    title={spinBusy ? "Spinning" : "Spin"}
+                    className="flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-900 shadow-lg transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    
                     <IconRefresh
-                      className={spinBusy ? "h-5 w-5 animate-spin" : "h-5 w-5"}
+                      className={spinBusy ? "h-6 w-6 animate-spin" : "h-6 w-6"}
                     />
                   </button>
-                ) : null}
+                )}
                 <div>Spin the wheel and find a friend</div>
               </div>
             )}
-            {/* <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" /> */}
 
-            <div className="absolute top-6 left-6 right-6 space-y-3">
+            {/* GRADIENT OVERLAY (non-interactive) */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+
+            {/* TOP FILTER SECTION */}
+            <div className="absolute top-6 left-6 right-6 z-20 space-y-3">
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
                   onClick={() => setShowFilters((prev) => !prev)}
-                  aria-expanded={showFilters}
-                  className={`${PILL_BASE} transition hover:-translate-y-0.5 hover:border-white/50 hover:bg-white`}
+                  className={`${PILL_BASE} transition active:scale-95`}
                 >
                   <IconFilter />
                   {showFilters ? "Hide filters" : "Filter"}
                 </button>
               </div>
+
               <div
                 className={`grid gap-3 rounded-3xl border border-white/10 bg-black/35 p-4 shadow-lg backdrop-blur transition ${
                   showFilters ? "opacity-100" : "pointer-events-none opacity-0"
@@ -422,11 +421,12 @@ export default function Home() {
                     placeholder="e.g. Location"
                     className={`${INPUT_BASE} pl-11`}
                     value={filters.city}
-                    onChange={(event) =>
-                      setFilters({ ...filters, city: event.target.value })
+                    onChange={(e) =>
+                      setFilters({ ...filters, city: e.target.value })
                     }
                   />
                 </div>
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-2">
                     <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
@@ -440,12 +440,13 @@ export default function Home() {
                         max="99"
                         className={`${INPUT_BASE} pl-11`}
                         value={filters.minAge}
-                        onChange={(event) =>
-                          setFilters({ ...filters, minAge: event.target.value })
+                        onChange={(e) =>
+                          setFilters({ ...filters, minAge: e.target.value })
                         }
                       />
                     </div>
                   </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
                       Maximum age
@@ -458,8 +459,8 @@ export default function Home() {
                         max="99"
                         className={`${INPUT_BASE} pl-11`}
                         value={filters.maxAge}
-                        onChange={(event) =>
-                          setFilters({ ...filters, maxAge: event.target.value })
+                        onChange={(e) =>
+                          setFilters({ ...filters, maxAge: e.target.value })
                         }
                       />
                     </div>
@@ -467,7 +468,9 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="absolute bottom-7 left-7 right-7 space-y-4 text-white">
+
+            {/* BOTTOM INFO SECTION */}
+            <div className="absolute bottom-7 left-7 right-7 z-20 space-y-4 text-white">
               <div>
                 <p className="text-3xl font-semibold">
                   {match ? `${match.name}, ${match.age}` : "Friend finder"}
@@ -477,30 +480,30 @@ export default function Home() {
                   {match ? match.city : "City will appear here"}
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
-                {hasSpun ? (
+                {hasSpun && (
                   <button
                     onClick={spin}
                     disabled={spinBusy}
-                    className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                    className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <IconRefresh className="h-4 w-4" />
                     {spinBusy ? "Spinning..." : "Spin again"}
                   </button>
-                ) : null}
+                )}
 
                 <a
                   href={match ? `https://wa.me/${match.phone}` : "#"}
                   target="_blank"
                   rel="noreferrer"
-                  className={`flex items-center justify-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-white shadow-lg transition ${
+                  className={`flex items-center justify-center gap-2 rounded-full px-2 py-2 text-sm font-semibold text-white shadow-lg transition active:scale-95 ${
                     match
-                      ? "bg-emerald-600 hover:-translate-y-0.5 hover:bg-emerald-500 hover:shadow-xl"
+                      ? "bg-emerald-600"
                       : "cursor-not-allowed bg-emerald-600/50"
                   }`}
-                  onClick={(event) => {
-                    if (!match) event.preventDefault();
+                  onClick={(e) => {
+                    if (!match) e.preventDefault();
                   }}
                 >
                   <IconWhatsapp />
