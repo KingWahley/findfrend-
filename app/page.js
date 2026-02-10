@@ -260,9 +260,7 @@ export default function Home() {
       <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-10 px-6 py-16">
         <section className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-6 rounded-[36px] border border-white/40 bg-white/80 p-10 shadow-2xl backdrop-blur">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
-              Random Friend Pro v2
-            </p>
+            
             <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
               Friend finder, built like your favorite social app.
             </h1>
@@ -286,7 +284,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl">
+<div className="relative hidden overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl md:block">
             <img
               src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
               alt="Preview profile"
@@ -399,7 +397,7 @@ export default function Home() {
                 <div>Spin the wheel and find a friend</div>
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+            {/* <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" /> */}
 
             <div className="absolute top-6 left-6 right-6 space-y-3">
               <div className="flex flex-wrap gap-2">
