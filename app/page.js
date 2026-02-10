@@ -391,6 +391,16 @@ export default function Home() {
                   </button>
                 )}
                 <div>Spin the wheel and find a friend</div>
+                {spinBusy && (
+                  <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="loader"></div>
+                      <p className="p-6 font-bold">
+                        Finding you friend
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
