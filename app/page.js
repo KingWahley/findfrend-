@@ -120,6 +120,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [authBusy, setAuthBusy] = useState(false);
   const [spinBusy, setSpinBusy] = useState(false);
+  const [hasSpun, setHasSpun] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -151,6 +152,12 @@ export default function Home() {
     setProfile(data);
   };
 
+  useEffect(() => {
+    if (profile?.id) {
+      setHasSpun(false);
+    }
+  }, [profile?.id]);
+
   const signIn = async () => {
     setError("");
     setAuthBusy(true);
@@ -177,6 +184,7 @@ export default function Home() {
     setUser(null);
     setProfile(null);
     setMatch(null);
+    setHasSpun(false);
     setAuthBusy(false);
   };
 
@@ -195,6 +203,7 @@ export default function Home() {
     setError("");
     setSpinBusy(true);
     setMatch(null);
+    setHasSpun(true);
 
     const query = supabase
       .from("profiles")
@@ -237,8 +246,10 @@ export default function Home() {
   if (loading) {
     return (
       <main className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-16">
-        <div className="rounded-[32px] border border-white/40 bg-white/80 px-8 py-6 text-center text-sm text-slate-700 shadow-xl backdrop-blur">
-          Loading your spot in the friend finder...
+
+        <div className="flex flex-col items-center justify-center">
+          <div className="loader"></div>
+          <p className="p-6 font-bold">Finding you a spot in the lobby</p>
         </div>
       </main>
     );
@@ -326,9 +337,6 @@ export default function Home() {
     <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-2 px-2 py-12 md:py-14">
       <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         {/* <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-slate-500">
-            Random Friend Pro v2
-          </p>
           <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
             Friend finder
           </h1>
@@ -337,7 +345,7 @@ export default function Home() {
           </p>
         </div> */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-          <div className="flex height-[100vh] items-center justify-between rounded-[10px] border border-slate-200 bg-white/80 px-6 py-4 ">
+          <div className="flex items-center justify-between rounded-[10px] border border-slate-200 bg-white/80 px-6 py-4 ">
             <div className="flex items-center gap-4">
               <img
                 src={profile.avatar_url}
@@ -373,11 +381,26 @@ export default function Home() {
                 className="h-[520px] w-full object-cover sm:h-[560px]"
               />
             ) : (
-              <div className="flex h-[520px] w-full items-center justify-center bg-gradient-to-br from-slate-900 via-slate-950 to-black text-center text-sm text-white/60 sm:h-[560px]">
-                No match yet. Your next friend is waiting.
+              <div className="flex h-[520px] w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-slate-900 via-slate-950 to-black text-center text-sm text-white/60 sm:h-[560px]">
+                {!hasSpun ? (
+                  <button
+                    onClick={spin}
+                    disabled={spinBusy}
+                    className="flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-900 shadow-[0_10px_26px_-14px_rgba(15,23,42,0.8)] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-[0_16px_36px_-18px_rgba(15,23,42,0.9)] disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label={spinBusy ? "Spinning" : "Spin"}
+                    title={spinBusy ? "Spinning" : "Spin"}
+                  >
+                    
+                    <IconRefresh
+                      className={spinBusy ? "h-5 w-5 animate-spin" : "h-5 w-5"}
+                    />
+                  </button>
+                ) : null}
+                <div>Spin the wheel and find a friend</div>
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+
             <div className="absolute top-6 left-6 right-6 space-y-3">
               <div className="flex flex-wrap gap-2">
                 <button
@@ -456,21 +479,18 @@ export default function Home() {
                   {match ? match.city : "City will appear here"}
                 </p>
               </div>
-              <div className="flex items-center gap-2 text-white/70">
-                <span className="h-2 w-2 rounded-full bg-white/80" />
-                <span className="h-2 w-2 rounded-full bg-white/40" />
-                <span className="h-2 w-2 rounded-full bg-white/40" />
-                <span className="h-2 w-2 rounded-full bg-white/40" />
-              </div>
+              
               <div className="grid grid-cols-2 gap-4">
-                <button
-                  onClick={spin}
-                  disabled={spinBusy}
-                  className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-2 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <IconRefresh className="h-4 w-4" />
-                  {spinBusy ? "Spinning..." : "Spin again"}
-                </button>
+                {hasSpun ? (
+                  <button
+                    onClick={spin}
+                    disabled={spinBusy}
+                    className="flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white/95 px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <IconRefresh className="h-4 w-4" />
+                    {spinBusy ? "Spinning..." : "Spin again"}
+                  </button>
+                ) : null}
 
                 <a
                   href={match ? `https://wa.me/${match.phone}` : "#"}
