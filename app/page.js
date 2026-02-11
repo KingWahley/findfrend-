@@ -728,9 +728,9 @@ function ProfileSetup({ user, onDone }) {
                 <option value="other">Other</option>
               </select>
 
-              <div className="flex items-center gap-3 w-full">
+              <div className="flex flex-col sm:flex-row gap-2 w-full">
                 <select
-                  className={`${INPUT_BASE} w-[120px] flex-shrink-0`}
+                  className="border border-gray-300 rounded px-3 py-2 w-full sm:w-24 flex-shrink-0"
                   value={form.countryCode}
                   onChange={(e) =>
                     setForm({ ...form, countryCode: e.target.value })
@@ -744,8 +744,8 @@ function ProfileSetup({ user, onDone }) {
 
                 <input
                   type="tel"
-                  placeholder=" whatsapp number"
-                  className={`${INPUT_BASE} flex-1`}
+                  placeholder="WhatsApp number"
+                  className="border border-gray-300 rounded px-3 py-2 flex-1 w-full sm:w-auto"
                   value={form.phone}
                   onChange={(event) =>
                     setForm({ ...form, phone: event.target.value })
