@@ -115,7 +115,12 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [match, setMatch] = useState(null);
-  const [filters, setFilters] = useState({ city: "", minAge: 18, maxAge: 40 });
+  const [filters, setFilters] = useState({
+    city: "",
+    minAge: 18,
+    maxAge: 40,
+    gender: "any",
+  });
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [authBusy, setAuthBusy] = useState(false);
@@ -195,6 +200,7 @@ export default function Home() {
       city: filters.city.trim(),
       minAge: Math.min(minAge, maxAge),
       maxAge: Math.max(minAge, maxAge),
+      gender: filters.gender,
     };
   }, [filters]);
 
@@ -214,6 +220,10 @@ export default function Home() {
 
     if (normalizedFilters.city) {
       query.ilike("city", `%${normalizedFilters.city}%`);
+    }
+
+    if (normalizedFilters.gender && normalizedFilters.gender !== "any") {
+      query.eq("gender", normalizedFilters.gender);
     }
 
     const { data, error } = await query;
@@ -245,7 +255,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-6 py-16">
+      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-2 py-2 md:px-16 md:py-16">
         <div className="flex flex-col items-center justify-center">
           <div className="loader"></div>
           <p className="p-6 font-bold">Finding you a spot in the lobby</p>
@@ -256,39 +266,46 @@ export default function Home() {
 
   if (!user) {
     return (
-      <main className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col items-center justify-center gap-10 px-6 py-16">
-        <section className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-6 rounded-[36px] border border-white/40 bg-white/80 p-10 shadow-2xl backdrop-blur">
-            <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
+      <main className="relative mx-auto flex h-[100dvh] w-full max-w-6xl items-center justify-center px-6 py-8">
+        <section className="grid h-full w-full items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          {/* LEFT SIDE */}
+          <div className="flex h-full flex-col justify-center space-y-6 rounded-2xl border border-white/40 bg-white/80 p-8 shadow-xl backdrop-blur">
+            <h1 className="text-3xl font-semibold text-slate-900 md:text-4xl">
               Friend finder, built like your favorite social app.
             </h1>
-            <p className="text-base text-slate-600">
+
+            <p className="text-sm text-slate-600 md:text-base">
               Drop in anonymously, tune your vibe filters, and spin for a
               surprise introduction. Clean profiles, instant WhatsApp reach, and
               no noisy onboarding.
             </p>
+
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <button
                 onClick={signIn}
                 disabled={authBusy}
-                className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <IconFilter className="h-4 w-4" />
                 {authBusy ? "Entering..." : "Enter the lounge"}
               </button>
+
               <p className="text-xs text-slate-500">
                 No email needed. Stay anonymous.
               </p>
             </div>
           </div>
 
-          <div className="relative hidden overflow-hidden rounded-[40px] bg-slate-950 shadow-2xl md:block">
+          {/* RIGHT SIDE */}
+          <div className="relative hidden h-full overflow-hidden rounded-[20px] bg-slate-950 shadow-xl md:block">
             <img
-              src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80"
+              src="https://as1.ftcdn.net/jpg/05/36/52/76/1000_F_536527633_qBevUcOrdbWPsWLwkZgw5j1JYQ0sQtfu.jpg"
               alt="Preview profile"
-              className="h-full min-h-[420px] w-full object-cover opacity-90"
+              className="h-full w-full object-cover opacity-90"
             />
+
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
             <div className="absolute top-6 left-6 flex flex-wrap gap-2">
               <span className={PILL_BASE}>
                 <IconFilter />
@@ -303,20 +320,16 @@ export default function Home() {
                 18-40
               </span>
             </div>
+
             <div className="absolute bottom-6 left-6 space-y-2 text-white">
-              <p className="text-2xl font-semibold">Mandy Portman, 26</p>
+              <p className="text-xl font-semibold">Mandy Portman, 26</p>
               <div className="flex items-center gap-2 text-sm text-white/80">
                 <IconLocation className="h-4 w-4" />
-                Ventura, CA
+                Lagos
               </div>
             </div>
           </div>
         </section>
-        {error ? (
-          <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-            {error}
-          </p>
-        ) : null}
       </main>
     );
   }
@@ -395,9 +408,7 @@ export default function Home() {
                   <div className="absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
                     <div className="flex flex-col items-center justify-center">
                       <div className="loader"></div>
-                      <p className="p-6 font-bold">
-                        Finding you friend
-                      </p>
+                      <p className="p-6 font-bold">Finding your friend</p>
                     </div>
                   </div>
                 )}
@@ -437,7 +448,26 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                      Gender
+                    </label>
+                    <select
+                      className={INPUT_BASE}
+                      value={filters.gender}
+                      onChange={(e) =>
+                        setFilters({ ...filters, gender: e.target.value })
+                      }
+                    >
+                      <option value="any">Any</option>
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                      <option value="nonbinary">Non-binary</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
                       Minimum age
@@ -483,7 +513,11 @@ export default function Home() {
             <div className="absolute bottom-7 left-7 right-7 z-20 space-y-4 text-white">
               <div>
                 <p className="text-3xl font-semibold">
-                  {match ? `${match.name}, ${match.age}` : "Friend finder"}
+                  {match
+                    ? `${match.name}, ${match.age}${
+                        match.gender ? `, ${match.gender}` : ""
+                      }`
+                    : "Friend finder"}
                 </p>
                 <p className="flex items-center gap-2 text-sm text-white/80">
                   <IconLocation className="h-4 w-4" />
@@ -533,10 +567,12 @@ function ProfileSetup({ user, onDone }) {
     name: "",
     city: "",
     age: "",
+    gender: "",
     phone: "",
     file: null,
     countryCode: "+234",
   });
+  const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -557,8 +593,15 @@ function ProfileSetup({ user, onDone }) {
   const saveProfile = async () => {
     setError("");
 
-    if (!form.name || !form.city || !form.age || !form.phone) {
-      setError("Please complete every field so we can match you.");
+    if (
+      !form.name ||
+      !form.city ||
+      !form.age ||
+      !form.gender ||
+      !form.phone ||
+      !form.file
+    ) {
+      setError("Please complete every field and upload a photo to continue.");
       return;
     }
 
@@ -573,6 +616,7 @@ function ProfileSetup({ user, onDone }) {
           name: form.name,
           city: form.city,
           age: Number(form.age),
+          gender: form.gender,
           phone: `${form.countryCode}${form.phone}`,
           avatar_url: avatarUrl,
         },
@@ -589,82 +633,172 @@ function ProfileSetup({ user, onDone }) {
   };
 
   return (
-    <section className="w-full max-w-3xl rounded-[36px] border border-white/50 bg-white/80 p-10 shadow-2xl backdrop-blur">
+    <section className="w-full max-w-3xl rounded-[20px] border border-white/50 bg-white/80 p-10 shadow-2xl backdrop-blur">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
+          <p className="text-xs sm:text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
             Create your profile
           </p>
-          <h2 className="text-3xl font-semibold text-slate-900">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
             Let the community meet you
           </h2>
-          <p className="text-sm text-slate-600">
-            Add a photo and details so we can suggest the best match.
-          </p>
         </div>
       </div>
 
       <div className="mt-8 grid gap-4">
-        <input
-          placeholder="Name"
-          className={INPUT_BASE}
-          onChange={(event) => setForm({ ...form, name: event.target.value })}
-        />
-
-        <input
-          placeholder="City"
-          className={INPUT_BASE}
-          onChange={(event) => setForm({ ...form, city: event.target.value })}
-        />
-
-        <input
-          type="number"
-          placeholder="Age"
-          min="18"
-          max="99"
-          className={INPUT_BASE}
-          onChange={(event) => setForm({ ...form, age: event.target.value })}
-        />
-
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <select
-            className={`${INPUT_BASE} sm:max-w-[140px]`}
-            value={form.countryCode}
-            onChange={(e) => setForm({ ...form, countryCode: e.target.value })}
-          >
-            <option value="+234">NG +234</option>
-            <option value="+1">US +1</option>
-            <option value="+44">UK +44</option>
-            <option value="+91">IN +91</option>
-          </select>
-
-          <input
-            type="tel"
-            placeholder="8012345678"
-            className={INPUT_BASE}
-            onChange={(event) =>
-              setForm({ ...form, phone: event.target.value })
-            }
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+          <span className="text-[11px] sm:text-sm">
+            {step === 1 ? "Basic details" : "Contact & photo"}
+          </span>
+          <span className="inline-block rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] sm:text-xs">
+            Step {step} / 2
+          </span>
         </div>
 
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm text-slate-500">
-          <input
-            type="file"
-            className="w-full text-sm"
-            onChange={(event) =>
-              setForm({ ...form, file: event.target.files[0] })
-            }
-          />
-        </div>
+        {step === 1 ? (
+          <>
+            <input
+              type="text"
+              placeholder="Name"
+              className={INPUT_BASE}
+              value={form.name}
+              onChange={(event) => {
+                const value = event.target.value.replace(/[^\p{L}\s]/gu, "");
+                setForm({ ...form, name: value });
+              }}
+            />
 
-        <button
-          onClick={saveProfile}
-          disabled={saving}
-          className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {saving ? "Saving profile..." : "Save profile"}
-        </button>
+            <input
+              type="text"
+              placeholder="City"
+              className={INPUT_BASE}
+              value={form.city}
+              onChange={(event) => {
+                const value = event.target.value.replace(/[^\p{L}\s]/gu, "");
+                setForm({ ...form, city: value });
+              }}
+            />
+
+            <input
+              type="number"
+              placeholder="Age"
+              min="18"
+              max="99"
+              className={INPUT_BASE}
+              value={form.age}
+              onChange={(event) =>
+                setForm({ ...form, age: event.target.value })
+              }
+            />
+
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-xs text-slate-500">
+                Next: phone number & photo
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!form.name || !form.city || !form.age) {
+                    setError("Please complete this section to continue.");
+                    return;
+                  }
+                  setError("");
+                  setStep(2);
+                }}
+                className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800"
+              >
+                Continue
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <select
+                className={INPUT_BASE}
+                value={form.gender}
+                onChange={(event) =>
+                  setForm({ ...form, gender: event.target.value })
+                }
+              >
+                <option value="">Gender</option>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="nonbinary">Non-binary</option>
+                <option value="other">Other</option>
+              </select>
+
+              <div className="flex items-center gap-3 w-full">
+                <select
+                  className={`${INPUT_BASE} w-[120px] flex-shrink-0`}
+                  value={form.countryCode}
+                  onChange={(e) =>
+                    setForm({ ...form, countryCode: e.target.value })
+                  }
+                >
+                  <option value="+234">NG +234</option>
+                  <option value="+1">US +1</option>
+                  <option value="+44">UK +44</option>
+                  <option value="+91">IN +91</option>
+                </select>
+
+                <input
+                  type="tel"
+                  placeholder=" whatsapp number"
+                  className={`${INPUT_BASE} flex-1`}
+                  value={form.phone}
+                  onChange={(event) =>
+                    setForm({ ...form, phone: event.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/70 px-4 py-3 text-sm text-slate-500">
+              <input
+                type="file"
+                className="w-full text-sm"
+                onChange={(event) =>
+                  setForm({ ...form, file: event.target.files[0] })
+                }
+              />
+              {form.file ? (
+                <div className="mt-2 flex items-center justify-between gap-3 text-xs text-slate-600">
+                  <span className="truncate">{form.file.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, file: null })}
+                    className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : null}
+            </div>
+
+            <div className="flex items-center justify-between gap-3 w-full">
+              <button
+                type="button"
+                onClick={() => {
+                  setError("");
+                  setStep(1);
+                }}
+                className="rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md"
+              >
+                Back
+              </button>
+
+              <button
+                onClick={saveProfile}
+                disabled={saving}
+                className="flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {saving ? "Saving profile..." : "Save profile"}
+              </button>
+            </div>
+          </>
+        )}
+
         {error ? (
           <p className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
             {error}
