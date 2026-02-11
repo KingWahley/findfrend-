@@ -268,7 +268,6 @@ export default function Home() {
     return (
       <main className="relative mx-auto flex h-[100dvh] w-full max-w-6xl items-center justify-center px-6 py-8">
         <section className="grid h-full w-full items-stretch gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          {/* LEFT SIDE */}
           <div className="flex h-full flex-col justify-center space-y-6 rounded-2xl border border-white/40 bg-white/80 p-8 shadow-xl backdrop-blur">
             <h1 className="text-3xl font-semibold text-slate-900 md:text-4xl">
               Friend finder, built like your favorite social app.
